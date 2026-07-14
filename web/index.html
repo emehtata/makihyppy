@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Makihyppy - browser port</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Mäkihyppy — browser port</h1>
+  <p class="source-note">
+    Ported from the original Spectravideo/MSX BASIC cassette listing
+    (<code>data/makihyppy.bas</code>). Practice and competition modes include the
+    original jump timing, in-flight balance, distance, and 5-judge style scoring.
+  </p>
+
+  <canvas id="game" width="768" height="576"></canvas>
+
+  <div id="hud">
+    <div id="status">Press SPACE to start the approach run.</div>
+    <div id="record">Best distance: <span id="best">0</span> m</div>
+    <div id="pitch">Ski pitch: <span id="angle">0</span>°</div>
+    <div id="stance">Stance: <span id="stanceValue">ready</span></div>
+    <div id="lastResult"></div>
+  </div>
+  <div id="judgeScores" aria-live="polite"></div>
+  <div id="hint" role="status" aria-live="polite"></div>
+  <div id="version" aria-label="Game version"></div>
+
+  <section id="modePanel" aria-label="Game mode">
+    <div id="modeControls">
+      <button id="practiceButton" type="button">Practice</button>
+      <button id="competitionButton" type="button">Competition</button>
+    </div>
+    <form id="competitionSetup" hidden>
+      <label>Competitors <input id="competitorCount" type="number" min="1" max="9" value="4"></label>
+      <label>Rounds <input id="roundCount" type="number" min="1" max="6" value="2"></label>
+      <div id="competitorInputs"></div>
+      <button type="submit">Start competition</button>
+    </form>
+  </section>
+
+  <section id="competitionPanel" hidden aria-label="Competition standings">
+    <div id="competitionMessage"></div>
+    <table>
+      <thead><tr><th>Rank</th><th>Jumper</th><th>Country</th><th>Last jump</th><th>Total</th></tr></thead>
+      <tbody id="scoreboardBody"></tbody>
+    </table>
+    <button id="nextRoundButton" type="button" hidden>Next round</button>
+  </section>
+
+  <details id="help" open>
+    <summary>Controls</summary>
+    <ul>
+      <li><strong>Space</strong> — start the approach run, then press again at the right moment to take off.</li>
+      <li><strong>A / D</strong> — raise or lower the skis while airborne. This changes the original flight stance, including its risk and scoring effects.</li>
+      <li>Land in stance 1 or 2 for a clean landing. Stance 3 or 4 falls; pushing beyond either end also falls.</li>
+    </ul>
+  </details>
+
+  <script src="version.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

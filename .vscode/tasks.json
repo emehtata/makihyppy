@@ -1,0 +1,55 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Extract makihyppy.bas",
+      "type": "shell",
+      "command": "python3",
+      "args": [
+        "extract_svi_basic.py",
+        "data/makihyppy.cas",
+        "data/makihyppy.bas"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Extract CAS to BAS (prompt)",
+      "type": "shell",
+      "command": "python3",
+      "args": [
+        "extract_svi_basic.py",
+        "${input:casInput}",
+        "${input:basOutput}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Serve web port (makihyppy browser game)",
+      "type": "shell",
+      "command": "python3 build_web_version.py && python3 -m http.server 8877",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "casInput",
+      "type": "promptString",
+      "description": "Input .cas path relative to the workspace"
+    },
+    {
+      "id": "basOutput",
+      "type": "promptString",
+      "description": "Output .bas path relative to the workspace"
+    }
+  ]
+}

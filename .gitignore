@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+
+# Generated browser version metadata
+web/version.js
+
+# Editor and operating system files
+.vscode/settings.json
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Test and coverage output
+.pytest_cache/
+.coverage
+htmlcov/

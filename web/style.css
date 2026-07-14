@@ -1,0 +1,159 @@
+body {
+  background: #10141c;
+  color: #e6e6e6;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+h1 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.source-note {
+  max-width: 40rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #a9b1c3;
+}
+
+canvas {
+  background: #bfe3ff;
+  border: 2px solid #333;
+  image-rendering: pixelated;
+  max-width: 100%;
+}
+
+#hud {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.95rem;
+}
+
+#lastResult {
+  min-width: 12rem;
+}
+
+#judgeScores {
+  box-sizing: border-box;
+  width: min(100%, 40rem);
+  color: #cfd4e0;
+  font-size: 0.9rem;
+}
+
+#version {
+  width: min(100%, 40rem);
+  color: #8fa0b5;
+  font-family: monospace;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+#hint {
+  box-sizing: border-box;
+  width: min(100%, 40rem);
+  border: 1px solid #51647d;
+  background: #1a2432;
+  color: #e8f4ff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+#modePanel,
+#competitionPanel {
+  box-sizing: border-box;
+  width: min(100%, 40rem);
+}
+
+#competitionSetup[hidden],
+#competitionPanel[hidden],
+#nextRoundButton[hidden] {
+  display: none;
+}
+
+#modeControls,
+#competitionSetup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+#competitionSetup {
+  margin-top: 0.75rem;
+}
+
+#competitionSetup label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+#competitionSetup input,
+#competitionSetup select,
+button {
+  font: inherit;
+}
+
+#competitorInputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.competitorInput {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, 0.7fr);
+  gap: 0.4rem;
+}
+
+button {
+  border: 1px solid #7fa9c9;
+  background: #203649;
+  color: #f4fbff;
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus-visible {
+  background: #315773;
+}
+
+#competitionPanel {
+  border-top: 1px solid #51647d;
+  padding-top: 0.75rem;
+}
+
+#competitionMessage {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+th,
+td {
+  border-bottom: 1px solid #36485a;
+  padding: 0.35rem;
+  text-align: left;
+}
+
+#nextRoundButton {
+  margin-top: 0.75rem;
+}
+
+details#help {
+  max-width: 40rem;
+  font-size: 0.85rem;
+  color: #cfd4e0;
+}
