@@ -213,7 +213,7 @@ function updateHint() {
     hintEl.textContent = "Hint: press SPACE to begin the approach.";
   } else if (phase === "approach") {
     hintEl.textContent = x <= 59
-      ? "Hint: wait for the takeoff window, then press SPACE near 65."
+      ? "Hint: wait until the skier reaches the end of the ramp, then press SPACE."
       : x <= 67
         ? "Hint: press SPACE now for the best takeoff."
         : "Hint: takeoff window missed; ride out this attempt.";
@@ -231,7 +231,7 @@ function updateHint() {
   } else if (phase === "landing") {
     hintEl.textContent = "Hint: clean landing. Keep the skis steady.";
   } else if (phase === "runout") {
-    hintEl.textContent = "Hint: hold SPACE to crouch during the run-out.";
+    hintEl.textContent = "Hint: hold SPACE to lift the skier during the run-out.";
   } else {
     hintEl.textContent = "Hint: balance was lost; prepare for the next attempt.";
   }
@@ -439,7 +439,7 @@ function stepLanding() {
   runoutX = 196;
   S = 9;
   phase = "runout";
-  statusEl.textContent = "Run-out: use A/D, hold SPACE to crouch.";
+  statusEl.textContent = "Run-out: use A/D, hold SPACE to lift the skier.";
 }
 
 function stepRunout() {
