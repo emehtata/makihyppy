@@ -21,6 +21,13 @@ h1 {
   color: #a9b1c3;
 }
 
+.credit {
+  margin: -0.35rem 0 0;
+  color: #cfd4e0;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
 canvas {
   background: #bfe3ff;
   border: 2px solid #333;
