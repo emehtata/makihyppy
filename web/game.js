@@ -516,12 +516,16 @@ function computeJudgesScore(distance) {
   const marks = new Array(5).fill(PT);
   marks[highJudge] = PT + spread;
   marks[lowJudge] = PT - spread;
-  for (let i = 0; i < 5; i++) {
-    if (i === highJudge || i === lowJudge) continue;
-    marks[i] = PT + spread - Math.floor(Math.random() * (spread * 4 + 1)) * 0.5;
-    if (marks[i] > 20) marks[i] = 20;
-    if (marks[i] < 0) marks[i] = 0;
+  const openJudges = marks
+    .map((mark, index) => (index === highJudge || index === lowJudge ? -1 : index))
+    .filter((index) => index >= 0);
+  for (let index = 0; index < 2; index++) {
+    const judge = openJudges[index];
+    marks[judge] = PT + spread - Math.floor(Math.random() * spread * 4) * 0.5;
   }
+  marks[openJudges[2]] = 0;
+  marks[openJudges[2]] = PT * 5 - marks.reduce((sum, mark) => sum + mark, 0);
+  for (let index = 0; index < 5; index++) marks[index] = Math.max(0, Math.min(20, marks[index]));
 
   const sum = marks.reduce((a, b) => a + b, 0);
   const max = Math.max(...marks);
