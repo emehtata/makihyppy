@@ -1,0 +1,10 @@
+[run]
+branch = true
+source =
+    extract_svi_basic
+    build_web_version
+
+[report]
+show_missing = true
+skip_covered = true
+fail_under = 90
