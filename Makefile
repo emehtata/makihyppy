@@ -1,8 +1,8 @@
-IMAGE ?= makihyppy:latest
+IMAGE ?= registry.biergartenrajis.fi/makihyppy:latest
 CONTAINER ?= makihyppy
 PORT ?= 8877
 
-.PHONY: build start stop remove restart logs shell status
+.PHONY: build start stop remove restart logs shell status test coverage e2e
 
 build:
 	docker build --tag $(IMAGE) .
@@ -30,3 +30,13 @@ status:
 
 push:
 	docker push $(IMAGE)
+
+test:
+	python3 -m unittest discover -s tests -v
+
+coverage:
+	python3 -m coverage run -m unittest discover -s tests -v
+	python3 -m coverage report --fail-under=90
+
+e2e:
+	npm run test:e2e
