@@ -195,7 +195,7 @@ details#help ul {
   padding-left: 1.25rem;
 }
 
-@media (max-width: 700px), (max-height: 700px) {
+@media (max-width: 700px), (max-height: 700px), (any-pointer: coarse) {
   body {
     gap: 0.35rem;
     padding: 0.4rem 0.6rem;

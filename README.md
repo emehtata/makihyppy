@@ -29,6 +29,29 @@ The browser game controls are:
 - `Space`: begin the approach and take off near the end of the ramp.
 - `A` / `D`: adjust ski angle during flight.
 
+## Tests
+
+Run the standard-library unit tests with:
+
+```sh
+make test
+```
+
+Install the dev dependency and enforce the 90% coverage threshold with:
+
+```sh
+python3 -m pip install --user -r requirements-dev.txt
+make coverage
+```
+
+Run the browser tests with Playwright:
+
+```sh
+npm install
+npx playwright install chromium
+make e2e
+```
+
 ## Container image
 
 The container serves the game on port `8877`.
@@ -69,4 +92,4 @@ The Service is type `LoadBalancer` on port `8877`, ready to be reached by an ext
 
 The Python extractor, browser port, container configuration, and Kubernetes manifests are licensed under the [MIT License](LICENSE).
 
-The cassette images in `data/` are preserved source artifacts and are not relicensed by this repository. The extracted Makihyppy BASIC listing credits its original author, Anssi Pulkkinen (1984).
+The cassette images in `data/` are preserved source artifacts and are not relicensed by this repository. Makihyppy was developed by Anssi Pulkkinen and published in Mikrobitti issue 1/1985. The extracted BASIC listing retains its original author credit.
