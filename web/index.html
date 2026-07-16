@@ -32,6 +32,7 @@
     <div id="modeControls">
       <button id="practiceButton" type="button" data-i18n="practice">Practice</button>
       <button id="competitionButton" type="button" data-i18n="competition">Competition</button>
+      <button id="hallOfFameButton" type="button" data-i18n="topJumps">Top jumps</button>
     </div>
     <form id="competitionSetup" hidden>
       <label><span data-i18n="competitors">Competitors</span> <input id="competitorCount" type="number" min="1" max="9" value="4"></label>
@@ -40,6 +41,25 @@
       <button type="submit" data-i18n="startCompetition">Start competition</button>
     </form>
   </section>
+
+  <dialog id="hallOfFameDialog" aria-labelledby="hallOfFameTitle">
+    <div class="dialogHeader">
+      <h2 id="hallOfFameTitle" data-i18n="hallOfFame">Hall of fame</h2>
+      <form method="dialog">
+        <button class="iconButton" type="submit" aria-label="Close" data-i18n-aria-label="close">&times;</button>
+      </form>
+    </div>
+    <div class="hallLists">
+      <section aria-labelledby="practiceHallTitle">
+        <h2 id="practiceHallTitle" data-i18n="practiceHall">Practice</h2>
+        <ol id="practiceHallList"></ol>
+      </section>
+      <section aria-labelledby="competitionHallTitle">
+        <h2 id="competitionHallTitle" data-i18n="competitionHall">Competition</h2>
+        <ol id="competitionHallList"></ol>
+      </section>
+    </div>
+  </dialog>
 
   <section id="competitionPanel" hidden aria-label="Competition standings" data-i18n-aria-label="competitionStandings">
     <div id="competitionMessage"></div>

@@ -195,6 +195,63 @@ details#help ul {
   padding-left: 1.25rem;
 }
 
+#hallOfFameDialog {
+  background: #1a2432;
+  border: 1px solid #7fa9c9;
+  box-sizing: border-box;
+  color: #cfd4e0;
+  font-size: 0.8rem;
+  max-width: min(32rem, calc(100vw - 2rem));
+  padding: 0.8rem;
+  width: 100%;
+}
+
+#hallOfFameDialog::backdrop {
+  background: rgb(0 0 0 / 60%);
+}
+
+.dialogHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dialogHeader h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.iconButton {
+  font-size: 1.4rem;
+  line-height: 1;
+  min-height: 2rem;
+  min-width: 2rem;
+  padding: 0;
+}
+
+.hallLists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 0.3rem;
+}
+
+.hallLists h2 {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.hallLists ol {
+  margin: 0.2rem 0;
+  padding-left: 1.5rem;
+}
+
+.hallLists li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 @media (max-width: 700px), (max-height: 700px), (any-pointer: coarse) {
   body {
     gap: 0.35rem;
@@ -250,5 +307,9 @@ details#help ul {
   #modePanel,
   #competitionPanel {
     width: min(100%, 32rem);
+  }
+
+  .hallLists {
+    gap: 0.6rem;
   }
 }

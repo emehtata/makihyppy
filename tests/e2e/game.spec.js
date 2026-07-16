@@ -30,6 +30,24 @@ test("uses Finnish when the browser prefers Finnish", async ({ browser }) => {
   await context.close();
 });
 
+test("renders separate practice and competition hall-of-fame lists from local storage", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("makihyppy.hall-of-fame.practice", JSON.stringify([
+      { name: "Ada", distance: 115.5 },
+      { name: "Bea", distance: 122 },
+    ]));
+    localStorage.setItem("makihyppy.hall-of-fame.competition", JSON.stringify([
+      { name: "Kai", distance: 118 },
+    ]));
+  });
+  await page.reload();
+
+  await page.getByRole("button", { name: "Top jumps" }).click();
+  await expect(page.locator("#hallOfFameDialog")).toBeVisible();
+  await expect(page.locator("#practiceHallList li")).toHaveText(["Bea122.0 m", "Ada115.5 m"]);
+  await expect(page.locator("#competitionHallList li")).toHaveText(["Kai118.0 m"]);
+});
+
 test("starts a competition and shows configured entrants", async ({ page }) => {
   await page.getByRole("button", { name: "Competition" }).click();
   await expect(page.locator("#competitionSetup")).toBeVisible();

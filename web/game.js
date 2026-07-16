@@ -28,6 +28,8 @@ const hintEl = document.getElementById("hint");
 const versionEl = document.getElementById("version");
 const practiceButton = document.getElementById("practiceButton");
 const competitionButton = document.getElementById("competitionButton");
+const hallOfFameButton = document.getElementById("hallOfFameButton");
+const hallOfFameDialog = document.getElementById("hallOfFameDialog");
 const competitionSetup = document.getElementById("competitionSetup");
 const competitorCountEl = document.getElementById("competitorCount");
 const roundCountEl = document.getElementById("roundCount");
@@ -40,6 +42,8 @@ const sourceNoteEl = document.getElementById("sourceNote");
 const jumpButton = document.getElementById("jumpButton");
 const raiseButton = document.getElementById("raiseButton");
 const lowerButton = document.getElementById("lowerButton");
+const practiceHallListEl = document.getElementById("practiceHallList");
+const competitionHallListEl = document.getElementById("competitionHallList");
 
 const browserLanguages = navigator.languages?.length ? navigator.languages : [navigator.language];
 const language = browserLanguages.some((locale) => locale.toLowerCase().startsWith("fi")) ? "fi" : "en";
@@ -54,6 +58,7 @@ const TRANSLATIONS = {
     practice: "Practice", competition: "Competition", competitors: "Competitors", rounds: "Rounds",
     startCompetition: "Start competition", competitionStandings: "Competition standings", rank: "Rank",
     jumper: "Jumper", country: "Country", lastJump: "Last jump", total: "Total", nextRound: "Next round",
+    hallOfFame: "Hall of fame", topJumps: "Top jumps", close: "Close", practiceHall: "Practice", competitionHall: "Competition", noJumpsYet: "No jumps yet",
     controls: "Controls",
     helpJump: "Space - start the approach run, then press again at the right moment to take off.",
     helpStance: "A / D - raise or lower the skis while airborne. This changes the original flight stance, including its risk and scoring effects.",
@@ -88,6 +93,7 @@ const TRANSLATIONS = {
     practice: "Harjoitus", competition: "Kilpailu", competitors: "Kilpailijoita", rounds: "Kierroksia",
     startCompetition: "Aloita kilpailu", competitionStandings: "Kilpailun tulokset", rank: "Sija",
     jumper: "Hyppääjä", country: "Maa", lastJump: "Viime hyppy", total: "Yhteensä", nextRound: "Seuraava kierros",
+    hallOfFame: "Kunniataulu", topJumps: "Parhaat hypyt", close: "Sulje", practiceHall: "Harjoitus", competitionHall: "Kilpailu", noJumpsYet: "Ei hyppyjä vielä",
     controls: "Ohjaimet",
     helpJump: "Välilyönti - aloita vauhti ja paina uudelleen oikealla hetkellä ponnistaaksesi.",
     helpStance: "A / D - nosta tai laske suksia ilmassa. Asento vaikuttaa lentoon, riskiin ja pisteisiin.",
@@ -131,6 +137,65 @@ function translatePage() {
 }
 
 translatePage();
+
+const HALL_OF_FAME_SIZE = 5;
+const HALL_OF_FAME_KEYS = {
+  practice: "makihyppy.hall-of-fame.practice",
+  competition: "makihyppy.hall-of-fame.competition",
+};
+
+function loadHallOfFame(mode) {
+  try {
+    const entries = JSON.parse(localStorage.getItem(HALL_OF_FAME_KEYS[mode]) ?? "[]");
+    if (!Array.isArray(entries)) return [];
+    return entries
+      .filter((entry) => typeof entry?.name === "string" && Number.isFinite(entry.distance))
+      .map((entry) => ({ name: entry.name.slice(0, 15), distance: entry.distance }))
+      .sort((a, b) => b.distance - a.distance)
+      .slice(0, HALL_OF_FAME_SIZE);
+  } catch {
+    return [];
+  }
+}
+
+const hallOfFame = {
+  practice: loadHallOfFame("practice"),
+  competition: loadHallOfFame("competition"),
+};
+
+function renderHallOfFame(mode) {
+  const list = mode === "practice" ? practiceHallListEl : competitionHallListEl;
+  list.replaceChildren();
+  const entries = hallOfFame[mode];
+  if (entries.length === 0) {
+    const item = document.createElement("li");
+    item.textContent = t("noJumpsYet");
+    list.append(item);
+    return;
+  }
+  entries.forEach((entry) => {
+    const item = document.createElement("li");
+    const name = document.createElement("span");
+    const distance = document.createElement("span");
+    name.textContent = entry.name;
+    distance.textContent = `${entry.distance.toFixed(1)} m`;
+    item.append(name, distance);
+    list.append(item);
+  });
+}
+
+function recordHallOfFame(mode, name, distance) {
+  const entries = [...hallOfFame[mode], { name: name.slice(0, 15), distance }]
+    .sort((a, b) => b.distance - a.distance)
+    .slice(0, HALL_OF_FAME_SIZE);
+  hallOfFame[mode] = entries;
+  try {
+    localStorage.setItem(HALL_OF_FAME_KEYS[mode], JSON.stringify(entries));
+  } catch {
+    // Keep the in-memory list usable when browser storage is unavailable.
+  }
+  renderHallOfFame(mode);
+}
 
 // ---------------------------------------------------------------------------
 // Data transcribed verbatim from the BASIC DATA statements (lines 1220-1290).
@@ -822,6 +887,8 @@ function finishJump() {
   const distance = computeDistance();
   const score = computeJudgesScore(distance);
   const points = score.total;
+  const hallMode = gameMode;
+  const jumperName = hallMode === "competition" ? competition?.competitors[0].name ?? t("player") : t("player");
 
   if (distance > bestDistance) {
     bestDistance = distance;
@@ -834,6 +901,7 @@ function finishJump() {
     points: points.toFixed(1),
   });
   renderJudgeScores(score);
+  recordHallOfFame(hallMode, jumperName, distance);
 
   resetToReady();
   if (gameMode === "competition" && competition) {
@@ -859,6 +927,8 @@ competitionButton.addEventListener("click", () => {
   competitionSetup.hidden = !competitionSetup.hidden;
   if (!competitionSetup.hidden) createCompetitorInputs();
 });
+
+hallOfFameButton.addEventListener("click", () => hallOfFameDialog.showModal());
 
 competitorCountEl.addEventListener("change", createCompetitorInputs);
 competitionSetup.addEventListener("submit", (event) => {
@@ -994,5 +1064,7 @@ function tick(now) {
 
 bestEl.textContent = bestDistance.toFixed(1);
 statusEl.textContent = t("readyStatus");
+renderHallOfFame("practice");
+renderHallOfFame("competition");
 updateHint();
 requestAnimationFrame(tick);
