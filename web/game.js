@@ -36,101 +36,6 @@ const competitionPanel = document.getElementById("competitionPanel");
 const competitionMessageEl = document.getElementById("competitionMessage");
 const scoreboardBody = document.getElementById("scoreboardBody");
 const nextRoundButton = document.getElementById("nextRoundButton");
-const sourceNoteEl = document.getElementById("sourceNote");
-const jumpButton = document.getElementById("jumpButton");
-const raiseButton = document.getElementById("raiseButton");
-const lowerButton = document.getElementById("lowerButton");
-
-const browserLanguages = navigator.languages?.length ? navigator.languages : [navigator.language];
-const language = browserLanguages.some((locale) => locale.toLowerCase().startsWith("fi")) ? "fi" : "en";
-const TRANSLATIONS = {
-  en: {
-    title: "Mäkihyppy — browser port",
-    documentTitle: "Mäkihyppy",
-    sourceNote: "Ported from the original Spectravideo/MSX BASIC cassette listing (data/makihyppy.bas). Practice and competition modes include the original jump timing, in-flight balance, distance, and 5-judge style scoring.",
-    credit: "Original game by Anssi Pulkkinen, published in Mikrobitti 1/1985.",
-    gameControls: "Game controls", raiseSkis: "Raise skis", lowerSkis: "Lower skis", jump: "Jump",
-    bestDistance: "Best distance", skiPitch: "Ski pitch", stance: "Stance", gameMode: "Game mode",
-    practice: "Practice", competition: "Competition", competitors: "Competitors", rounds: "Rounds",
-    startCompetition: "Start competition", competitionStandings: "Competition standings", rank: "Rank",
-    jumper: "Jumper", country: "Country", lastJump: "Last jump", total: "Total", nextRound: "Next round",
-    controls: "Controls",
-    helpJump: "Space - start the approach run, then press again at the right moment to take off.",
-    helpStance: "A / D - raise or lower the skis while airborne. This changes the original flight stance, including its risk and scoring effects.",
-    helpLanding: "Land in stance 1 or 2 for a clean landing. Stance 3 or 4 falls; pushing beyond either end also falls.",
-    ready: "ready", safe: "safe", fall: "fall",
-    hintComplete: "Hint: competition complete. Review the final standings.",
-    hintNextRound: "Hint: review the standings, then start the next round.",
-    hintPlayer: "{name}: press SPACE to start your jump.", hintReady: "Hint: press SPACE to begin the approach.",
-    hintWait: "Hint: wait until the skier reaches the end of the ramp, then press SPACE.",
-    hintTakeoff: "Hint: press SPACE now for the best takeoff.", hintMissed: "Hint: takeoff window missed; ride out this attempt.",
-    hintLower: "Hint: press D for stance {stance}.", hintRaise: "Hint: press A for stance {stance}.",
-    hintGlide: "Hint: hold stance 3 for the most efficient glide.", hintLanding: "Hint: hold stance 2 for a safe landing.",
-    hintClean: "Hint: clean landing. Keep the skis steady.", hintRunout: "Hint: hold SPACE to lift the skier during the run-out.",
-    hintFall: "Hint: balance was lost; prepare for the next attempt.",
-    approachStatus: "Approach run: press SPACE at the right moment to take off.", flightStatus: "In the air: use A/D to adjust ski angle.",
-    cleanLanding: "Clean landing...", lostBalance: "Lost balance...", runoutStatus: "Run-out: use A/D, hold SPACE to lift the skier.",
-    judges: "Judges: {marks}. Discarded high {high}, low {low}. Style {style} + distance bonus {bonus}.",
-    competitorName: "Competitor {number} name", competitorCountry: "Competitor {number} country", player: "Player", jumperName: "Jumper {number}",
-    roundPrepare: "Round {round}: {name}, prepare to jump.", roundComplete: "Round {round} complete. Standings determine reverse jump order.",
-    roundCompleteStatus: "Round complete. Select Next round when ready.", competitionComplete: "Competition complete.",
-    competitionCompleteStatus: "Competition complete. Select Practice or start a new competition.", roundOf: "Round {round} of {rounds}",
-    result: "Distance: {distance} m{fall} - Style points: {points}", fallResult: " (fall)", readyStatus: "Press SPACE to start the approach run.",
-    Finland: "Finland", Austria: "Austria", Norway: "Norway", DDR: "DDR", Canada: "Canada",
-  },
-  fi: {
-    title: "Mäkihyppy — selainversio",
-    documentTitle: "Mäkihyppy",
-    sourceNote: "Siirretty alkuperäisestä Spectravideo/MSX BASIC -kasettilistauksesta (data/makihyppy.bas). Harjoitus- ja kilpailutilat sisältävät alkuperäisen ponnistuksen ajoituksen, ilmatasapainon, pituuden ja viiden tuomarin tyylipisteet.",
-    credit: "Alkuperäinen peli: Anssi Pulkkinen, Mikrobitti 1/1985.",
-    gameControls: "Pelin ohjaimet", raiseSkis: "Nosta sukset", lowerSkis: "Laske sukset", jump: "Hyppää",
-    bestDistance: "Paras pituus", skiPitch: "Suksien kulma", stance: "Asento", gameMode: "Pelitila",
-    practice: "Harjoitus", competition: "Kilpailu", competitors: "Kilpailijoita", rounds: "Kierroksia",
-    startCompetition: "Aloita kilpailu", competitionStandings: "Kilpailun tulokset", rank: "Sija",
-    jumper: "Hyppääjä", country: "Maa", lastJump: "Viime hyppy", total: "Yhteensä", nextRound: "Seuraava kierros",
-    controls: "Ohjaimet",
-    helpJump: "Välilyönti - aloita vauhti ja paina uudelleen oikealla hetkellä ponnistaaksesi.",
-    helpStance: "A / D - nosta tai laske suksia ilmassa. Asento vaikuttaa lentoon, riskiin ja pisteisiin.",
-    helpLanding: "Laskeudu asennossa 1 tai 2. Asennot 3 ja 4 aiheuttavat kaatumisen; rajan ylitys kaataa myös.",
-    ready: "valmis", safe: "turvallinen", fall: "kaatuminen",
-    hintComplete: "Vihje: kilpailu on päättynyt. Tarkista lopputulokset.",
-    hintNextRound: "Vihje: tarkista tulokset ja aloita sitten seuraava kierros.",
-    hintPlayer: "{name}: aloita hyppy painamalla välilyöntiä.", hintReady: "Vihje: aloita vauhti painamalla välilyöntiä.",
-    hintWait: "Vihje: odota, että hyppääjä saavuttaa ponnistuslavan lopun, ja paina välilyöntiä.",
-    hintTakeoff: "Vihje: ponnista nyt painamalla välilyöntiä.", hintMissed: "Vihje: ponnistusikkuna meni ohi; laskeudu tällä yrityksellä.",
-    hintLower: "Vihje: paina D asentoon {stance}.", hintRaise: "Vihje: paina A asentoon {stance}.",
-    hintGlide: "Vihje: pidä asento 3 tehokkainta liitoa varten.", hintLanding: "Vihje: pidä asento 2 turvallista alastuloa varten.",
-    hintClean: "Vihje: puhdas alastulo. Pidä sukset vakaina.", hintRunout: "Vihje: pidä välilyöntiä painettuna nostaaksesi hyppääjää loppuliu'ussa.",
-    hintFall: "Vihje: tasapaino petti; valmistaudu seuraavaan yritykseen.",
-    approachStatus: "Vauhti: ponnista painamalla välilyöntiä oikealla hetkellä.", flightStatus: "Ilmassa: säädä suksien kulmaa A/D-näppäimillä.",
-    cleanLanding: "Puhdas alastulo...", lostBalance: "Tasapaino petti...", runoutStatus: "Loppuliuku: käytä A/D-näppäimiä, pidä välilyöntiä painettuna nostaaksesi hyppääjää.",
-    judges: "Tuomarit: {marks}. Hylätty korkein {high}, matalin {low}. Tyyli {style} + pituuslisä {bonus}.",
-    competitorName: "Kilpailijan {number} nimi", competitorCountry: "Kilpailijan {number} maa", player: "Pelaaja", jumperName: "Hyppääjä {number}",
-    roundPrepare: "Kierros {round}: {name}, valmistaudu hyppyyn.", roundComplete: "Kierros {round} päättyi. Tulokset määräävät käänteisen hyppyjärjestyksen.",
-    roundCompleteStatus: "Kierros päättyi. Valitse Seuraava kierros, kun olet valmis.", competitionComplete: "Kilpailu päättyi.",
-    competitionCompleteStatus: "Kilpailu päättyi. Valitse Harjoitus tai aloita uusi kilpailu.", roundOf: "Kierros {round}/{rounds}",
-    result: "Pituus: {distance} m{fall} - Tyylipisteet: {points}", fallResult: " (kaatuminen)", readyStatus: "Aloita vauhti painamalla välilyöntiä.",
-    Finland: "Suomi", Austria: "Itävalta", Norway: "Norja", DDR: "DDR", Canada: "Kanada",
-  },
-};
-
-function t(key, values = {}) {
-  return TRANSLATIONS[language][key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? `{${name}}`);
-}
-
-function translatePage() {
-  document.documentElement.lang = language;
-  document.title = t("documentTitle");
-  sourceNoteEl.textContent = t("sourceNote");
-  document.querySelectorAll("[data-i18n]").forEach((element) => {
-    element.textContent = t(element.dataset.i18n);
-  });
-  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
-    element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
-  });
-}
-
-translatePage();
 
 // ---------------------------------------------------------------------------
 // Data transcribed verbatim from the BASIC DATA statements (lines 1220-1290).
@@ -257,7 +162,7 @@ let gameMode = "practice";
 let competition = null;
 
 const input = { jump: false, raise: false, lower: false };
-const COUNTRIES = ["Finland", "Austria", "Norway", "DDR", "Canada"].map((country) => t(country));
+const COUNTRIES = ["Finland", "Austria", "Norway", "DDR", "Canada"];
 
 const GAME_VERSION = window.MAKIHYPPY_VERSION ?? { source: "development", built: "not generated" };
 versionEl.textContent = `v${GAME_VERSION.source} built ${GAME_VERSION.built}`;
@@ -282,71 +187,53 @@ window.addEventListener("keyup", (event) => {
   else if (event.code === "KeyD") input.lower = false;
 });
 
-function bindTouchControl(button, inputName, onPress) {
-  button.addEventListener("pointerdown", (event) => {
-    event.preventDefault();
-    button.setPointerCapture(event.pointerId);
-    input[inputName] = true;
-    onPress?.();
-  });
-  const release = (event) => {
-    event.preventDefault();
-    input[inputName] = false;
-  };
-  button.addEventListener("pointerup", release);
-  button.addEventListener("pointercancel", release);
-  button.addEventListener("lostpointercapture", release);
-}
-
-bindTouchControl(jumpButton, "jump", onJumpKey);
-bindTouchControl(raiseButton, "raise");
-bindTouchControl(lowerButton, "lower");
-
 function setSkiAngle(angle) {
   skiAngle = angle;
   angleEl.textContent = String(angle);
 }
 
 function updateStance() {
-  stanceEl.textContent = phase === "flight" ? `${S} (${S <= 2 ? t("safe") : t("fall")})` : t("ready");
+  stanceEl.textContent = phase === "flight" ? `${S} (${S <= 2 ? "safe" : "fall"})` : "ready";
 }
 
 function updateHint() {
   if (gameMode === "competition" && phase === "ready" && competition?.awaitingNext) {
-    hintEl.textContent = competition.round >= competition.rounds ? t("hintComplete") : t("hintNextRound");
+    hintEl.textContent = competition.round >= competition.rounds
+      ? "Hint: competition complete. Review the final standings."
+      : "Hint: review the standings, then start the next round.";
     return;
   }
 
   if (gameMode === "competition" && phase === "ready" && competition) {
-    hintEl.textContent = t("hintPlayer", { name: competition.competitors[0].name });
+    hintEl.textContent = `${competition.competitors[0].name}: press SPACE to start your jump.`;
     return;
   }
 
   if (phase === "ready") {
-    hintEl.textContent = t("hintReady");
+    hintEl.textContent = "Hint: press SPACE to begin the approach.";
   } else if (phase === "approach") {
     hintEl.textContent = x <= 59
-      ? t("hintWait")
+      ? "Hint: wait until the skier reaches the end of the ramp, then press SPACE."
       : x <= 67
-        ? t("hintTakeoff")
-        : t("hintMissed");
+        ? "Hint: press SPACE now for the best takeoff."
+        : "Hint: takeoff window missed; ride out this attempt.";
   } else if (phase === "flight") {
     const targetStance = x < 112 ? 3 : 2;
     if (S < targetStance) {
-      hintEl.textContent = t("hintLower", { stance: targetStance });
+      hintEl.textContent = `Hint: press D for stance ${targetStance}.`;
     } else if (S > targetStance) {
-      hintEl.textContent = t("hintRaise", { stance: targetStance });
+      hintEl.textContent = `Hint: press A for stance ${targetStance}.`;
     } else if (targetStance === 3) {
-      hintEl.textContent = t("hintGlide");
+      hintEl.textContent = "Hint: hold stance 3 for the most efficient glide.";
     } else {
-      hintEl.textContent = t("hintLanding");
+      hintEl.textContent = "Hint: hold stance 2 for a safe landing.";
     }
   } else if (phase === "landing") {
-    hintEl.textContent = t("hintClean");
+    hintEl.textContent = "Hint: clean landing. Keep the skis steady.";
   } else if (phase === "runout") {
-    hintEl.textContent = t("hintRunout");
+    hintEl.textContent = "Hint: hold SPACE to lift the skier during the run-out.";
   } else {
-    hintEl.textContent = t("hintFall");
+    hintEl.textContent = "Hint: balance was lost; prepare for the next attempt.";
   }
 }
 
@@ -381,7 +268,7 @@ function startApproach() {
   setSkiAngle(0);
   phase = "approach";
   updateStance();
-  statusEl.textContent = t("approachStatus");
+  statusEl.textContent = "Approach run: press SPACE at the right moment to take off.";
 }
 
 function recordMark(mark) {
@@ -437,7 +324,7 @@ function startFlight() {
   setSkiAngle(stanceAngle(S));
   phase = "flight";
   updateStance();
-  statusEl.textContent = t("flightStatus");
+  statusEl.textContent = "In the air: use A/D to adjust ski angle.";
 }
 
 function stepFlight() {
@@ -501,7 +388,7 @@ function handleTouchdown() {
   if (S === 1 || S === 2) {
     landingZ = x;
     phase = "landing";
-    statusEl.textContent = t("cleanLanding");
+    statusEl.textContent = "Clean landing...";
   } else {
     PK = 10;
     startCrashSlide();
@@ -510,7 +397,7 @@ function handleTouchdown() {
 
 function startCrashSlide() {
   phase = "tail";
-  statusEl.textContent = t("lostBalance");
+  statusEl.textContent = "Lost balance...";
   crashZ = x;
 }
 
@@ -552,7 +439,7 @@ function stepLanding() {
   runoutX = 196;
   S = 9;
   phase = "runout";
-  statusEl.textContent = t("runoutStatus");
+  statusEl.textContent = "Run-out: use A/D, hold SPACE to lift the skier.";
 }
 
 function stepRunout() {
@@ -655,13 +542,10 @@ function computeJudgesScore(distance) {
 
 function renderJudgeScores(score) {
   const marks = score.marks.map((mark) => mark.toFixed(1)).join(" | ");
-  judgeScoresEl.textContent = t("judges", {
-    marks,
-    high: score.discardedHigh.toFixed(1),
-    low: score.discardedLow.toFixed(1),
-    style: score.styleTotal.toFixed(1),
-    bonus: score.distanceBonus.toFixed(1),
-  });
+  judgeScoresEl.textContent =
+    `Judges: ${marks}. Discarded high ${score.discardedHigh.toFixed(1)}, ` +
+    `low ${score.discardedLow.toFixed(1)}. ` +
+    `Style ${score.styleTotal.toFixed(1)} + distance bonus ${score.distanceBonus.toFixed(1)}.`;
 }
 
 function resetToReady() {
@@ -683,12 +567,12 @@ function createCompetitorInputs() {
     row.className = "competitorInput";
     const name = document.createElement("input");
     name.className = "competitorName";
-    name.value = index === 0 ? t("player") : t("jumperName", { number: index + 1 });
+    name.value = index === 0 ? "Player" : `Jumper ${index + 1}`;
     name.maxLength = 15;
-    name.setAttribute("aria-label", t("competitorName", { number: index + 1 }));
+    name.setAttribute("aria-label", `Competitor ${index + 1} name`);
     const country = document.createElement("select");
     country.className = "competitorCountry";
-    country.setAttribute("aria-label", t("competitorCountry", { number: index + 1 }));
+    country.setAttribute("aria-label", `Competitor ${index + 1} country`);
     for (const countryName of COUNTRIES) {
       const option = document.createElement("option");
       option.value = countryName;
@@ -742,7 +626,7 @@ function recordCompetitionJump(competitorIndex, result) {
 function prepareCompetitionPlayer() {
   resetToReady();
   const player = competition.competitors[0];
-  statusEl.textContent = t("roundPrepare", { round: competition.round, name: player.name });
+  statusEl.textContent = `Round ${competition.round}: ${player.name}, prepare to jump.`;
   updateHint();
 }
 
@@ -750,12 +634,12 @@ function completeCompetitionRound() {
   competition.awaitingNext = true;
   renderCompetition();
   if (competition.round < competition.rounds) {
-    competitionMessageEl.textContent = t("roundComplete", { round: competition.round });
-    statusEl.textContent = t("roundCompleteStatus");
+    competitionMessageEl.textContent = `Round ${competition.round} complete. Standings determine reverse jump order.`;
+    statusEl.textContent = "Round complete. Select Next round when ready.";
     nextRoundButton.hidden = false;
   } else {
-    competitionMessageEl.textContent = t("competitionComplete");
-    statusEl.textContent = t("competitionCompleteStatus");
+    competitionMessageEl.textContent = "Competition complete.";
+    statusEl.textContent = "Competition complete. Select Practice or start a new competition.";
     nextRoundButton.hidden = true;
   }
   updateHint();
@@ -782,7 +666,7 @@ function beginCompetitionRound() {
     .map(({ index }) => index);
   competition.turn = 0;
   nextRoundButton.hidden = true;
-  competitionMessageEl.textContent = t("roundOf", { round: competition.round, rounds: competition.rounds });
+  competitionMessageEl.textContent = `Round ${competition.round} of ${competition.rounds}`;
   simulateAiUntilPlayer();
   renderCompetition();
 }
@@ -802,7 +686,7 @@ function startCompetition() {
     round: 1,
     rounds: Math.max(1, Math.min(6, Number(roundCountEl.value) || 1)),
     competitors: names.map((name, index) => ({
-      name: name.value.trim() || t("jumperName", { number: index + 1 }),
+      name: name.value.trim() || `Jumper ${index + 1}`,
       country: countries[index].value,
       total: 0,
       jumps: [],
@@ -828,18 +712,17 @@ function finishJump() {
     bestEl.textContent = bestDistance.toFixed(1);
   }
 
-  resultEl.textContent = t("result", {
-    distance: distance.toFixed(1),
-    fall: PK ? t("fallResult") : "",
-    points: points.toFixed(1),
-  });
+  resultEl.textContent =
+    `Distance: ${distance.toFixed(1)} m` +
+    (PK ? " (fall)" : "") +
+    ` — Style points: ${points.toFixed(1)}`;
   renderJudgeScores(score);
 
   resetToReady();
   if (gameMode === "competition" && competition) {
     completeCompetitionPlayerJump(distance, score);
   } else {
-    statusEl.textContent = t("readyStatus");
+    statusEl.textContent = "Press SPACE to start the approach run.";
     updateHint();
   }
 }
@@ -851,7 +734,7 @@ practiceButton.addEventListener("click", () => {
   competitionPanel.hidden = true;
   nextRoundButton.hidden = true;
   resetToReady();
-  statusEl.textContent = t("readyStatus");
+  statusEl.textContent = "Press SPACE to start the approach run.";
   updateHint();
 });
 
@@ -993,6 +876,5 @@ function tick(now) {
 }
 
 bestEl.textContent = bestDistance.toFixed(1);
-statusEl.textContent = t("readyStatus");
 updateHint();
 requestAnimationFrame(tick);

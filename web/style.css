@@ -5,10 +5,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  min-height: 100dvh;
-  box-sizing: border-box;
-  padding: 0.4rem 1rem;
+  gap: 0.75rem;
+  padding: 1rem;
 }
 
 h1 {
@@ -17,52 +15,30 @@ h1 {
 }
 
 .source-note {
-  margin: 0;
   max-width: 40rem;
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #a9b1c3;
 }
 
 .credit {
-  margin: 0;
+  margin: -0.35rem 0 0;
   color: #cfd4e0;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   text-align: center;
 }
 
 canvas {
-  aspect-ratio: 4 / 3;
   background: #bfe3ff;
   border: 2px solid #333;
-  box-sizing: border-box;
-  display: block;
-  height: auto;
   image-rendering: pixelated;
-  width: min(calc(100vw - 2rem), calc(48dvh * 4 / 3));
-}
-
-#touchControls {
-  display: none;
-  gap: 0.6rem;
-  justify-content: center;
-  width: min(100%, 32rem);
-}
-
-.touchButton {
-  min-height: 3rem;
-  min-width: 3.5rem;
-  touch-action: none;
-}
-
-.jumpButton {
-  min-width: 7rem;
+  max-width: 100%;
 }
 
 #hud {
   display: flex;
-  gap: 1rem;
-  font-size: 0.85rem;
+  gap: 1.5rem;
+  font-size: 0.95rem;
 }
 
 #lastResult {
@@ -73,14 +49,14 @@ canvas {
   box-sizing: border-box;
   width: min(100%, 40rem);
   color: #cfd4e0;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 #version {
   width: min(100%, 40rem);
   color: #8fa0b5;
   font-family: monospace;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   text-align: right;
 }
 
@@ -90,8 +66,8 @@ canvas {
   border: 1px solid #51647d;
   background: #1a2432;
   color: #e8f4ff;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
 }
 
 #modePanel,
@@ -184,71 +160,7 @@ td {
 }
 
 details#help {
-  box-sizing: border-box;
   max-width: 40rem;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: #cfd4e0;
-}
-
-details#help ul {
-  margin: 0.2rem 0;
-  padding-left: 1.25rem;
-}
-
-@media (max-width: 700px), (max-height: 700px) {
-  body {
-    gap: 0.35rem;
-    padding: 0.4rem 0.6rem;
-  }
-
-  h1 {
-    font-size: 1rem;
-  }
-
-  .source-note,
-  .credit,
-  #version,
-  details#help {
-    display: none;
-  }
-
-  canvas {
-    width: min(calc(100vw - 1.2rem), calc(56dvh * 4 / 3));
-  }
-
-  #touchControls {
-    display: flex;
-  }
-
-  #hud {
-    display: grid;
-    gap: 0.2rem 0.75rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: min(100%, 32rem);
-    font-size: 0.8rem;
-  }
-
-  #status,
-  #lastResult {
-    grid-column: 1 / -1;
-  }
-
-  #lastResult {
-    min-width: 0;
-  }
-
-  #hint,
-  #judgeScores {
-    width: min(100%, 32rem);
-    font-size: 0.8rem;
-  }
-
-  #hint {
-    padding: 0.35rem 0.5rem;
-  }
-
-  #modePanel,
-  #competitionPanel {
-    width: min(100%, 32rem);
-  }
 }

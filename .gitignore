@@ -19,8 +19,3 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
-
-# Node and Playwright output
-node_modules/
-playwright-report/
-test-results/
