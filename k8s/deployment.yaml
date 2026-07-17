@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: makihyppy
-          image: registry.biergartenrajis.fi/makihyppy:latest
+          image: registry.example.com/makihyppy:latest
           imagePullPolicy: Always
           ports:
             - name: http

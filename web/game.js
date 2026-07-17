@@ -278,6 +278,8 @@ function buildFlightTable() {
 
 const M = buildHillProfile();
 const P = buildFlightTable();
+const JUDGE_COUNTRY_CODES = ["FIN", "AUT", "NOR", "DDR", "CAN"];
+const COUNTRY_SKI_COLORS = ["#1e3a8a", "#db6559", "#65a9e8", "#ccc35e", "#dc526d"];
 
 function clampIndex(v, lo, hi) {
   return Math.max(lo, Math.min(hi, Math.round(v)));
@@ -289,7 +291,7 @@ function clampIndex(v, lo, hi) {
 
 const STEP_MS = 26; // pace of one simulated BASIC "frame" (x-step)
 
-let bestDistance = 0; // "KE" record display (line 10 starts at 110 in the original)
+let bestDistance = 110; // "KE" record display (line 10 starts at 110 in the original)
 let phase = "ready"; // ready -> approach -> flight -> tail -> result -> ready
 let x = 5;
 let H = 0;
@@ -320,6 +322,8 @@ let crashKneeOffset = 0;
 let skiAngle = 0;
 let gameMode = "practice";
 let competition = null;
+let latestJudgeScore = null;
+let currentCountryIndex = 0;
 
 const input = { jump: false, raise: false, lower: false };
 const COUNTRIES = ["Finland", "Austria", "Norway", "DDR", "Canada"].map((country) => t(country));
@@ -443,6 +447,7 @@ function startApproach() {
   prevMark = 0;
   lastMark = 0;
   E = 0;
+  latestJudgeScore = null;
   setSkiAngle(0);
   phase = "approach";
   updateStance();
@@ -676,7 +681,7 @@ function computeP3() {
 }
 
 // lines 480-660: the 5-judge trimmed-mean style score.
-function computeJudgesScore(distance) {
+function computeJudgesScore(distance, countryIndex) {
   const P1 = Math.max(0, 4 - Math.abs(65 - H) * 0.5);
   const P2 = Math.max(0, 12 - (10 * (L1 + L4)) / Math.max(1, L0) - 0.3 * LM);
   const P3 = computeP3();
@@ -687,7 +692,7 @@ function computeJudgesScore(distance) {
   const PP = distance < 60 ? 0 : Math.floor(((distance - 60) * 600) / 55) / 10;
 
   const spread = Math.floor(Math.random() * 3) * 0.5; // line 530
-  const highJudge = Math.floor(Math.random() * 5);
+  const highJudge = countryIndex;
   let lowJudge = Math.floor(Math.random() * 5);
   while (lowJudge === highJudge) lowJudge = Math.floor(Math.random() * 5);
 
@@ -719,6 +724,7 @@ function computeJudgesScore(distance) {
 }
 
 function renderJudgeScores(score) {
+  latestJudgeScore = score;
   const marks = score.marks.map((mark) => mark.toFixed(1)).join(" | ");
   judgeScoresEl.textContent = t("judges", {
     marks,
@@ -771,11 +777,12 @@ function renderCompetition() {
   competitionPanel.hidden = false;
   scoreboardBody.replaceChildren();
   const standings = [...competition.competitors].sort((a, b) => b.total - a.total);
-  standings.forEach((competitor, index) => {
+  standings.forEach((competitor) => {
     const row = document.createElement("tr");
     const lastJump = competitor.jumps.at(-1);
+    const rank = 1 + standings.filter((other) => other.total > competitor.total).length;
     const values = [
-      String(index + 1),
+      String(rank),
       competitor.name,
       competitor.country,
       lastJump ? `${lastJump.distance.toFixed(1)} m / ${lastJump.points.toFixed(1)}` : "-",
@@ -807,6 +814,7 @@ function recordCompetitionJump(competitorIndex, result) {
 function prepareCompetitionPlayer() {
   resetToReady();
   const player = competition.competitors[0];
+  currentCountryIndex = player.countryIndex;
   statusEl.textContent = t("roundPrepare", { round: competition.round, name: player.name });
   updateHint();
 }
@@ -869,6 +877,7 @@ function startCompetition() {
     competitors: names.map((name, index) => ({
       name: name.value.trim() || t("jumperName", { number: index + 1 }),
       country: countries[index].value,
+      countryIndex: COUNTRIES.indexOf(countries[index].value),
       total: 0,
       jumps: [],
     })),
@@ -885,7 +894,7 @@ function startCompetition() {
 
 function finishJump() {
   const distance = computeDistance();
-  const score = computeJudgesScore(distance);
+  const score = computeJudgesScore(distance, currentCountryIndex);
   const points = score.total;
   const hallMode = gameMode;
   const jumperName = hallMode === "competition" ? competition?.competitors[0].name ?? t("player") : t("player");
@@ -915,6 +924,7 @@ function finishJump() {
 practiceButton.addEventListener("click", () => {
   gameMode = "practice";
   competition = null;
+  currentCountryIndex = 0;
   competitionSetup.hidden = true;
   competitionPanel.hidden = true;
   nextRoundButton.hidden = true;
@@ -950,6 +960,25 @@ createCompetitorInputs();
 function drawHill() {
   ctx.fillStyle = "#bfe3ff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // BASIC lines 590-600 and 970: the same five national judges stay above
+  // their marks in a fixed top-of-screen panel.
+  ctx.fillStyle = "#173b5d";
+  ctx.fillRect(50 * SCALE, 8 * SCALE, 205 * SCALE, 12 * SCALE);
+  ctx.fillStyle = "#f8f3e5";
+  ctx.font = `${SCALE * 5}px monospace`;
+  JUDGE_COUNTRY_CODES.forEach((country, index) => {
+    ctx.fillText(country, (65 + index * 35) * SCALE, 17 * SCALE);
+  });
+
+  if (latestJudgeScore) {
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(50 * SCALE, 20 * SCALE, 205 * SCALE, 11 * SCALE);
+    ctx.fillStyle = "#111";
+    latestJudgeScore.marks.forEach((mark, index) => {
+      ctx.fillText(mark.toFixed(1), (59 + index * 35) * SCALE, 29 * SCALE);
+    });
+  }
 
   // --- Ground / hill surface (lines 960-970) -------------------------------
   // The real hill surface only starts at x=71 (the takeoff table); under the
@@ -1022,7 +1051,7 @@ function drawSkier() {
   const px = Math.round(skierX * SCALE);
   const py = Math.round(skierY * SCALE);
   const angle = phase === "flight" ? (skiAngle * Math.PI) / 180 : 0;
-  ctx.fillStyle = "#1e3a8a";
+  ctx.fillStyle = COUNTRY_SKI_COLORS[currentCountryIndex];
   ctx.save();
   ctx.translate(px + 8 * SCALE, py + 8 * SCALE);
   ctx.rotate(angle);
